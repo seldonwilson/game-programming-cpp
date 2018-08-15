@@ -4,6 +4,14 @@
 #include "SDL/SDL.h"
 
 
+   // Holds 2D coordinates
+struct Vector2
+{
+   float x;
+   float y;
+};
+
+
 class Game
 {
    public:
@@ -22,6 +30,8 @@ class Game
       SDL_Window* mWindow;
       SDL_Renderer* mRenderer;
       bool mIsRunning;
+      Vector2 mPaddlePosition;
+      Vector2 mBallPosition;
 };
 
 #endif // SOURCE_GAME_HPP

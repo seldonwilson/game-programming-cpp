@@ -10,5 +10,5 @@ int main()
    }
 
    game.shutdown();
-   return 0;
+   return EXIT_SUCCESS;
 }

@@ -1,8 +1,13 @@
 #include "Game.hpp"
 
+const int thickness    = 15;
+const int paddleHeight = 100.0f;
+
 Game::Game()
 : mWindow(nullptr)
 , mIsRunning(true)
+, mBallPosition{512, 384}
+, mPaddlePosition{15, 384}
 { }
 
 
@@ -97,14 +102,47 @@ void Game::updateGame()
 
 void Game::generateOutput()
 {
-   SDL_SetRenderDrawColor(
-      mRenderer,
-      0,   // red
-      0,   // green
-      0,   // blue
-      255  // alpha
-   );
-
+      // Set draw color to black and render entire window
+   SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
    SDL_RenderClear(mRenderer);
+
+      // Set draw color to white
+   SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+
+      // Create and draw top wall
+   SDL_Rect wall{0, 0, 1024, thickness};
+   SDL_RenderFillRect(mRenderer, &wall);
+
+      // Draw bottom wall
+   wall.y = 768 - thickness;
+   SDL_RenderFillRect(mRenderer, &wall);
+
+      // Draw right wall
+   wall.x = 1024 - thickness;
+   wall.y = 0;
+   wall.w = thickness;
+   wall.h = 768 + thickness * 2;
+   SDL_RenderFillRect(mRenderer, &wall);
+
+      // Draw ball
+   SDL_Rect ball {
+      static_cast<int>(mBallPosition.x - thickness / 2),
+      static_cast<int>(mBallPosition.y - thickness / 2),
+      thickness,
+      thickness
+   };
+   SDL_RenderFillRect(mRenderer, &ball);
+
+      // Draw Paddle
+   SDL_Rect paddle {
+      static_cast<int>(mPaddlePosition.x - thickness / 2),
+      static_cast<int>(mBallPosition.y - paddleHeight / 2),
+      thickness,
+      paddleHeight
+   };
+   SDL_RenderFillRect(mRenderer, &paddle);
+
+
+      // Swap front and back buffers (update screen)
    SDL_RenderPresent(mRenderer);
 }
