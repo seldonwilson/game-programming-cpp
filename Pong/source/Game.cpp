@@ -6,6 +6,7 @@ const int paddleHeight = 100.0f;
 
 Game::Game()
 : mWindow(nullptr)
+, mRenderer(nullptr)
 , mIsRunning(true)
 , mBallPosition{512, 384}
 , mPaddlePosition{15, 384}
