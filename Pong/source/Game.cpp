@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include <cmath>
 
 const int thickness    = 15;
 const int paddleHeight = 100.0f;
@@ -8,6 +9,7 @@ Game::Game()
 , mIsRunning(true)
 , mBallPosition{512, 384}
 , mPaddlePosition{15, 384}
+, mBallVelocity{-200.0f, 235.0f}
 , mTicksCount(0)
 , mPaddleDirection(0)
 { }
@@ -124,8 +126,33 @@ void Game::updateGame()
          mPaddlePosition.y = paddleHeight / 2.0f + thickness;
       else if (mPaddlePosition.y > 768 - paddleHeight / 2.0f - thickness)
          mPaddlePosition.y = 768 - paddleHeight / 2.0f - thickness;
-
    }
+
+   mBallPosition.x += mBallVelocity.x * deltaTime;
+   mBallPosition.y += mBallVelocity.y * deltaTime;
+
+      // Handle ball bouncing against top, bottom, and right walls
+   if (mBallPosition.y <= thickness * 1.4f && mBallVelocity.y < 0.0f)
+      mBallVelocity.y *= -1.0f;
+   else if (mBallPosition.y >= (768 - thickness * 1.4f) && mBallVelocity.y > 0.0f)
+      mBallVelocity.y *= -1.0f;
+   else if (mBallPosition.x >= (1024 - thickness * 1.4) && mBallVelocity.x > 0.0f)
+      mBallVelocity.x *= -1.0f;
+
+   int diff = abs(mBallPosition.y - mPaddlePosition.y);
+
+   if (
+      diff <= paddleHeight / 2.0f &&
+      mBallPosition.x <= 28.0f    &&
+      mBallPosition.x >= 20.0f    &&
+      mBallVelocity.x < 0.0f
+   )
+      mBallVelocity.x *= -1.0f;
+
+      // End game if ball went off screen
+   if (mBallPosition.x <= 0.0f)
+      mIsRunning = false;
+
 }
 
 
