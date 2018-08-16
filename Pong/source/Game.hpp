@@ -30,7 +30,8 @@ class Game
       SDL_Window*   mWindow;
       SDL_Renderer* mRenderer;
       bool          mIsRunning;
-      Vector2       mPaddlePosition;
+      Vector2       mLeftPaddlePosition;
+      Vector2       mRightPaddlePosition;
       Vector2       mBallPosition;
       Vector2       mBallVelocity;
       Uint32        mTicksCount;

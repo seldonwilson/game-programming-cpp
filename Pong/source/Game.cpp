@@ -9,8 +9,8 @@ Game::Game()
 , mRenderer(nullptr)
 , mIsRunning(true)
 , mBallPosition{512, 384}
-, mPaddlePosition{15, 384}
-, mBallVelocity{-200.0f, 235.0f}
+, mLeftPaddlePosition{15, 384}
+, mBallVelocity{-250.0f, 235.0f}
 , mTicksCount(0)
 , mPaddleDirection(0)
 { }
@@ -120,13 +120,13 @@ void Game::updateGame()
 
    if (mPaddleDirection != 0)
    {
-      mPaddlePosition.y += mPaddleDirection * 300.0f * deltaTime;
+      mLeftPaddlePosition.y += mPaddleDirection * 300.0f * deltaTime;
 
          // Ensure paddle doesn't move off the screen
-      if (mPaddlePosition.y < paddleHeight / 2.0f + thickness)
-         mPaddlePosition.y = paddleHeight / 2.0f + thickness;
-      else if (mPaddlePosition.y > 768 - paddleHeight / 2.0f - thickness)
-         mPaddlePosition.y = 768 - paddleHeight / 2.0f - thickness;
+      if (mLeftPaddlePosition.y < paddleHeight / 2.0f + thickness)
+         mLeftPaddlePosition.y = paddleHeight / 2.0f + thickness;
+      else if (mLeftPaddlePosition.y > 768 - paddleHeight / 2.0f - thickness)
+         mLeftPaddlePosition.y = 768 - paddleHeight / 2.0f - thickness;
    }
 
    mBallPosition.x += mBallVelocity.x * deltaTime;
@@ -137,10 +137,8 @@ void Game::updateGame()
       mBallVelocity.y *= -1.0f;
    else if (mBallPosition.y >= (768 - thickness * 1.4f) && mBallVelocity.y > 0.0f)
       mBallVelocity.y *= -1.0f;
-   else if (mBallPosition.x >= (1024 - thickness * 1.4) && mBallVelocity.x > 0.0f)
-      mBallVelocity.x *= -1.0f;
 
-   int diff = abs(mBallPosition.y - mPaddlePosition.y);
+   int diff = abs(mBallPosition.y - mLeftPaddlePosition.y);
 
    if (
       diff <= paddleHeight / 2.0f &&
@@ -151,9 +149,8 @@ void Game::updateGame()
       mBallVelocity.x *= -1.0f;
 
       // End game if ball went off screen
-   if (mBallPosition.x <= 0.0f)
+   if (mBallPosition.x <= 0.0f || mBallPosition.x >= 1024)
       mIsRunning = false;
-
 }
 
 
@@ -174,13 +171,6 @@ void Game::generateOutput()
    wall.y = 768 - thickness;
    SDL_RenderFillRect(mRenderer, &wall);
 
-      // Draw right wall
-   wall.x = 1024 - thickness;
-   wall.y = 0;
-   wall.w = thickness;
-   wall.h = 768 + thickness * 2;
-   SDL_RenderFillRect(mRenderer, &wall);
-
       // Draw ball
    SDL_Rect ball {
       static_cast<int>(mBallPosition.x - thickness / 2),
@@ -192,8 +182,8 @@ void Game::generateOutput()
 
       // Draw Paddle
    SDL_Rect paddle {
-      static_cast<int>(mPaddlePosition.x - thickness / 2),
-      static_cast<int>(mPaddlePosition.y - paddleHeight / 2),
+      static_cast<int>(mLeftPaddlePosition.x - thickness / 2),
+      static_cast<int>(mLeftPaddlePosition.y - paddleHeight / 2),
       thickness,
       paddleHeight
    };
