@@ -8,6 +8,8 @@ Game::Game()
 , mIsRunning(true)
 , mBallPosition{512, 384}
 , mPaddlePosition{15, 384}
+, mTicksCount(0)
+, mPaddleDirection(0)
 { }
 
 
@@ -87,16 +89,34 @@ void Game::processInput()
 
    const Uint8* state = SDL_GetKeyboardState(NULL);
    if (state[SDL_SCANCODE_ESCAPE])
-   {
       mIsRunning = false;
-   }
+
+   mPaddleDirection = 0;
+   if (state[SDL_SCANCODE_W])
+      mPaddleDirection -= 1;
+   if (state[SDL_SCANCODE_S])
+      mPaddleDirection += 1;
 }
 
 
 void Game::updateGame()
 {
+      // Wait for at least 16 ms to pass
+   while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16))
+      ;
 
+      // Difference in ticks from last frame (in seconds)
+   float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
 
+      // Limit maximum amount for deltaTime
+   if (deltaTime > 0.05f)
+      deltaTime = 0.05f;
+
+      // Tick count updated for next frame
+   mTicksCount = SDL_GetTicks();
+
+   if (mPaddleDirection != 0)
+      mPaddlePosition.y += mPaddleDirection * 300.0f * deltaTime;
 }
 
 
@@ -136,7 +156,7 @@ void Game::generateOutput()
       // Draw Paddle
    SDL_Rect paddle {
       static_cast<int>(mPaddlePosition.x - thickness / 2),
-      static_cast<int>(mBallPosition.y - paddleHeight / 2),
+      static_cast<int>(mPaddlePosition.y - paddleHeight / 2),
       thickness,
       paddleHeight
    };

@@ -27,11 +27,13 @@ class Game
       void generateOutput();
 
          // Data members
-      SDL_Window* mWindow;
+      SDL_Window*   mWindow;
       SDL_Renderer* mRenderer;
-      bool mIsRunning;
-      Vector2 mPaddlePosition;
-      Vector2 mBallPosition;
+      bool          mIsRunning;
+      Vector2       mPaddlePosition;
+      Vector2       mBallPosition;
+      Uint32        mTicksCount;
+      int           mPaddleDirection;
 };
 
 #endif // SOURCE_GAME_HPP
