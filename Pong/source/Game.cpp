@@ -103,9 +103,9 @@ void Game::processInput()
       mLeftPaddleDirection -= 1;
    if (state[SDL_SCANCODE_S])
       mLeftPaddleDirection += 1;
-   if (state[SDL_SCANCODE_I])
+   if (state[SDL_SCANCODE_UP])
       mRightPaddleDirection -= 1;
-   if (state[SDL_SCANCODE_K])
+   if (state[SDL_SCANCODE_DOWN])
       mRightPaddleDirection += 1;
 }
 
@@ -159,6 +159,7 @@ void Game::updateGame()
    else if (mBallPosition.y >= (768 - thickness * 1.4f) && mBallVelocity.y > 0.0f)
       mBallVelocity.y *= -1.0f;
 
+      // Handle ball bouncing off left paddle
    int diff = abs(mBallPosition.y - mLeftPaddlePosition.y);
 
    if (
@@ -167,6 +168,21 @@ void Game::updateGame()
       mBallPosition.x >= 20.0f    &&
       mBallVelocity.x < 0.0f
    )
+      mBallVelocity.x *= -1.0f;
+
+      // End game if ball went off screen
+   if (mBallPosition.x <= 0.0f || mBallPosition.x >= 1024)
+      mIsRunning = false;
+
+      // Handle ball bouncing off right paddle
+   diff = abs(mBallPosition.y - mRightPaddlePosition.y);
+
+   if (
+       diff <= paddleHeight / 2.0f &&
+       mBallPosition.x >= 996.0f   &&
+       mBallPosition.x <= 1004.0f  &&
+       mBallVelocity.x > 0.0f
+       )
       mBallVelocity.x *= -1.0f;
 
       // End game if ball went off screen
