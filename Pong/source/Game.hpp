@@ -35,7 +35,8 @@ class Game
       Vector2       mBallPosition;
       Vector2       mBallVelocity;
       Uint32        mTicksCount;
-      int           mPaddleDirection;
+      int           mLeftPaddleDirection;
+      int           mRightPaddleDirection;
 };
 
 #endif // SOURCE_GAME_HPP

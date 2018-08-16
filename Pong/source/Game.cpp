@@ -1,7 +1,8 @@
 #include "Game.hpp"
 #include <cmath>
+#include <iostream>
 
-const int thickness    = 15;
+const int thickness = 15;
 const int paddleHeight = 100.0f;
 
 Game::Game()
@@ -10,9 +11,11 @@ Game::Game()
 , mIsRunning(true)
 , mBallPosition{512, 384}
 , mLeftPaddlePosition{15, 384}
+, mRightPaddlePosition{1009, 384}
 , mBallVelocity{-250.0f, 235.0f}
 , mTicksCount(0)
-, mPaddleDirection(0)
+, mLeftPaddleDirection(0)
+, mRightPaddleDirection(0)
 { }
 
 
@@ -94,11 +97,16 @@ void Game::processInput()
    if (state[SDL_SCANCODE_ESCAPE])
       mIsRunning = false;
 
-   mPaddleDirection = 0;
+   mLeftPaddleDirection = 0;
+   mRightPaddleDirection = 0;
    if (state[SDL_SCANCODE_W])
-      mPaddleDirection -= 1;
+      mLeftPaddleDirection -= 1;
    if (state[SDL_SCANCODE_S])
-      mPaddleDirection += 1;
+      mLeftPaddleDirection += 1;
+   if (state[SDL_SCANCODE_I])
+      mRightPaddleDirection -= 1;
+   if (state[SDL_SCANCODE_K])
+      mRightPaddleDirection += 1;
 }
 
 
@@ -118,15 +126,28 @@ void Game::updateGame()
       // Tick count updated for next frame
    mTicksCount = SDL_GetTicks();
 
-   if (mPaddleDirection != 0)
+      // Update left paddle position based on keyboard input
+   if (mLeftPaddleDirection != 0)
    {
-      mLeftPaddlePosition.y += mPaddleDirection * 300.0f * deltaTime;
+      mLeftPaddlePosition.y += mLeftPaddleDirection * 300.0f * deltaTime;
 
          // Ensure paddle doesn't move off the screen
       if (mLeftPaddlePosition.y < paddleHeight / 2.0f + thickness)
          mLeftPaddlePosition.y = paddleHeight / 2.0f + thickness;
       else if (mLeftPaddlePosition.y > 768 - paddleHeight / 2.0f - thickness)
          mLeftPaddlePosition.y = 768 - paddleHeight / 2.0f - thickness;
+   }
+
+      // Update right paddle position based on keybaord input
+   if (mRightPaddleDirection != 0)
+   {
+      mRightPaddlePosition.y += mRightPaddleDirection * 300.0f * deltaTime;
+
+         // Ensure paddle doesn't move off the screen
+      if (mRightPaddlePosition.y < paddleHeight / 2.0f + thickness)
+         mRightPaddlePosition.y = paddleHeight / 2.0f + thickness;
+      else if (mRightPaddlePosition.y > 768 - paddleHeight / 2.0f - thickness)
+         mRightPaddlePosition.y = 768 - paddleHeight / 2.0f - thickness;
    }
 
    mBallPosition.x += mBallVelocity.x * deltaTime;
@@ -180,13 +201,18 @@ void Game::generateOutput()
    };
    SDL_RenderFillRect(mRenderer, &ball);
 
-      // Draw Paddle
+      // Draw left paddle
    SDL_Rect paddle {
       static_cast<int>(mLeftPaddlePosition.x - thickness / 2),
       static_cast<int>(mLeftPaddlePosition.y - paddleHeight / 2),
       thickness,
       paddleHeight
    };
+   SDL_RenderFillRect(mRenderer, &paddle);
+
+      // Draw right paddle
+   paddle.x = static_cast<int>(mRightPaddlePosition.x - thickness / 2);
+   paddle.y = static_cast<int>(mRightPaddlePosition.y - paddleHeight / 2);
    SDL_RenderFillRect(mRenderer, &paddle);
 
 
