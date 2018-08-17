@@ -38,8 +38,6 @@ class Game
       bool              mIsRunning;
       Vector2           mLeftPaddlePosition;
       Vector2           mRightPaddlePosition;
-      Vector2           mBallPosition;
-      Vector2           mBallVelocity;
       Uint32            mTicksCount;
       int               mLeftPaddleDirection;
       int               mRightPaddleDirection;
