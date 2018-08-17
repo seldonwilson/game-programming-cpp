@@ -14,7 +14,7 @@ Game::Game()
 , mTicksCount(0)
 , mLeftPaddleDirection(0)
 , mRightPaddleDirection(0)
-, balls{{{512, 384}, {-250.0f, 235.0f}}, {{400, 500}, {200.0f, 275.0f}}}
+, balls{{{512, 384}, {-250.0f, 235.0f}}, {{400, 500}, {150.0f, 275.0f}}}
 { }
 
 
@@ -127,7 +127,7 @@ void Game::updateGame()
       // Update left paddle position based on keyboard input
    if (mLeftPaddleDirection != 0)
    {
-      mLeftPaddlePosition.y += mLeftPaddleDirection * 300.0f * deltaTime;
+      mLeftPaddlePosition.y += mLeftPaddleDirection * 375.0f * deltaTime;
 
          // Ensure paddle doesn't move off the screen
       if (mLeftPaddlePosition.y < paddleHeight / 2.0f + thickness)
@@ -139,7 +139,7 @@ void Game::updateGame()
       // Update right paddle position based on keybaord input
    if (mRightPaddleDirection != 0)
    {
-      mRightPaddlePosition.y += mRightPaddleDirection * 300.0f * deltaTime;
+      mRightPaddlePosition.y += mRightPaddleDirection * 375.0f * deltaTime;
 
          // Ensure paddle doesn't move off the screen
       if (mRightPaddlePosition.y < paddleHeight / 2.0f + thickness)
