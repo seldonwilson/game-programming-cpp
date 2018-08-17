@@ -2,6 +2,7 @@
 #define SOURCE_GAME_HPP
 
 #include "SDL/SDL.h"
+#include <vector>
 
 
    // Holds 2D coordinates
@@ -11,6 +12,11 @@ struct Vector2
    float y;
 };
 
+struct Ball
+{
+   Vector2 position;
+   Vector2 velocity;
+};
 
 class Game
 {
@@ -27,16 +33,15 @@ class Game
       void generateOutput();
 
          // Data members
-      SDL_Window*   mWindow;
-      SDL_Renderer* mRenderer;
-      bool          mIsRunning;
-      Vector2       mLeftPaddlePosition;
-      Vector2       mRightPaddlePosition;
-      Vector2       mBallPosition;
-      Vector2       mBallVelocity;
-      Uint32        mTicksCount;
-      int           mLeftPaddleDirection;
-      int           mRightPaddleDirection;
+      SDL_Window*       mWindow;
+      SDL_Renderer*     mRenderer;
+      bool              mIsRunning;
+      Vector2           mLeftPaddlePosition;
+      Vector2           mRightPaddlePosition;
+      Uint32            mTicksCount;
+      int               mLeftPaddleDirection;
+      int               mRightPaddleDirection;
+      std::vector<Ball> balls;
 };
 
 #endif // SOURCE_GAME_HPP
