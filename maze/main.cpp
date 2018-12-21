@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <stdio.h>
+#include "Maze.hpp"
 
 const int SCREEN_WIDTH  = 480;
 const int SCREEN_HEIGHT = 480;
@@ -21,7 +22,7 @@ bool init();
 bool loadMedia();
 void close();
 SDL_Surface* loadSurface(std::string path);
-std::vector<int> loadMaze(std::string maze);
+std::vector<std::vector<int>> loadMaze(std::string maze);
 
 SDL_Window*  gWindow         = nullptr;
 SDL_Surface* gScreenSurface  = nullptr;
@@ -61,7 +62,7 @@ int main(int argc, char* argv[])
       }
    }
    
-   loadMaze("maze.txt");
+   Maze myMaze("maze.txt");
 
    close();
    return 0;
@@ -165,8 +166,8 @@ SDL_Surface* loadSurface(std::string path)
    return loadedSurface;
 }
 
-std::vector<int> loadMaze(std::string maze) {
-   std::ifstream mazeFile(maze.c_str());
+std::vector<std::vector<int>> loadMaze(std::string filename) {
+   std::ifstream mazeFile(filename.c_str());
    
    if (!mazeFile.is_open()) {
       printf("ERROR opening file\nEXITING...\n");
@@ -189,20 +190,25 @@ std::vector<int> loadMaze(std::string maze) {
    mazeFile >> s;
    
    int end;
-   mazeFile >> end;   
+   mazeFile >> end;
    
-   printf("Base is size: %d", base);
+   std::vector<std::vector<int>> maze(height, std::vector<int>(base, 0));
    
-   /*
-   while (mazeFile >> s) {
-      if (s == "|") {
-         printf("\n");
-      } else if (s == "#") {
-         printf("#\n");
-      } else {
-         printf("%s ", s.c_str());
+   for (int row = 0; row < height; ++row) {
+      for (int col = 0; col < base; ++col) {
+         int wall;
+         mazeFile >> wall;
+         maze[row][col] = wall;
       }
-   }*/
+   }
+   
+   
+   for (int row = 0; row < height; ++row) {
+      for (int col = 0; col < base; ++col) {
+         printf("%2d ", maze[row][col]);
+      }
+      printf("\n");
+   }
    
    return {};
 }
