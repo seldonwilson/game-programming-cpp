@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <utility>
 
 #define TILE_EAST    2
 #define TILE_SOUTH   3
@@ -14,20 +15,32 @@
 using std::vector;
 using std::string;
 
-class Maze {
-private:
-   vector<vector<int>> maze;
-   
+class Maze {   
 public:
    Maze(string mazeFilename);
    
       /* Takes a position in the maze and determine if there's an opening in the
          specified direction.
       */   
-   bool canMoveNorth(int row, int col);
-   bool canMoveEast(int row, int col);
-   bool canMoveSouth(int row, int col);
-   bool canMoveWest(int row, int col);
+   bool canMoveNorth(int row, int col) const;
+   bool canMoveEast (int row, int col) const;
+   bool canMoveSouth(int row, int col) const;
+   bool canMoveWest (int row, int col) const;
+   
+      // Gets some basic information about the maze
+   int getNumRows() const;
+   int getNumCols() const;
+   std::pair<int, int> getStart()  const;
+   std::pair<int, int> getFinish() const;
+
+      // Gets the filename based on the given position
+   std::string getTilename(int row, int col) const;
+
+private:
+   vector<vector<int>>    maze;
+   vector<vector<string>> tileNames;
+   std::pair<int, int>    start;
+   std::pair<int, int>    finish;
 };
 
 

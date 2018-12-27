@@ -2,21 +2,13 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
 #include <stdio.h>
 #include "Maze.hpp"
+#include "Player.hpp"
 
 const int SCREEN_WIDTH  = 480;
 const int SCREEN_HEIGHT = 480;
-
-enum MazeSurfaces
-{
-   START, FINISH, BOINK,                                       // special tiles
-   WALLS_NONE,                                                 // 0 walls
-   WALLS_N, WALLS_E, WALLS_S, WALLS_W,                         // 1 wall
-   WALLS_NE, WALLS_SE, WALLS_SW, WALLS_NW, WALLS_EW, WALLS_NS, // 2 walls
-   OPEN_N, OPEN_E, OPEN_S, OPEN_W,                             // 3 walls
-   MAZE_SURFACES_TOTAL   
-};
 
 bool init();
 bool loadMedia();
@@ -27,7 +19,7 @@ std::vector<std::vector<int>> loadMaze(std::string maze);
 SDL_Window*  gWindow         = nullptr;
 SDL_Surface* gScreenSurface  = nullptr;
 SDL_Surface* gCurrentSurface = nullptr;
-SDL_Surface* gMazeSurfaces[MAZE_SURFACES_TOTAL];
+std::unordered_map<std::string, SDL_Surface*> gMazeSurfaces;
 
 
    /* There's a bug, either in SDL, OpenGL, or MacOS which won't render the
@@ -38,8 +30,10 @@ int main(int argc, char* argv[])
    if (init() && loadMedia())
    {
       bool quit = false;
-      int i = START;
-      gCurrentSurface = gMazeSurfaces[i];
+      Maze maze("maze.txt");
+      std::pair<int, int> start = maze.getStart();
+      gCurrentSurface = gMazeSurfaces[maze.getTilename(start.first, start.second)];
+      Player player(start.first, start.second);
 
       while (!quit)
       {
@@ -52,8 +46,28 @@ int main(int argc, char* argv[])
             
             else if (e.type == SDL_KEYDOWN)
             {
-               i = (i + 1) % 3; // change to MAZE_SURFACES_TOTAL
-               gCurrentSurface = gMazeSurfaces[i];
+               int row = player.getRow();
+               int col = player.getCol();
+               
+               switch (e.key.keysym.sym)
+               {
+                  case SDLK_UP:
+                     if (!maze.canMoveNorth(row, col)) { break; }
+                     
+                     break;
+                  
+                  case SDLK_DOWN:
+                  
+                     break;
+                     
+                  case SDLK_LEFT:
+                  
+                     break;
+                     
+                  case SDLK_RIGHT:
+                  
+                     break;
+               }
             }
          }
 
@@ -62,8 +76,6 @@ int main(int argc, char* argv[])
       }
    }
    
-   Maze myMaze("maze.txt");
-
    close();
    return 0;
 }
@@ -78,7 +90,7 @@ bool init()
    }
    
    gWindow = SDL_CreateWindow(
-      "Event Driven Test To See If The Title Is Too Long Or Too Long! It just needs to be a little longer",
+      "Maze Game",
       SDL_WINDOWPOS_CENTERED,
       SDL_WINDOWPOS_CENTERED,
       SCREEN_WIDTH,
@@ -102,44 +114,131 @@ bool loadMedia()
 {
    bool success = true;
    
-   gMazeSurfaces[START] = loadSurface("img/start.bmp");
-   if (gMazeSurfaces[START] == nullptr)
+   gMazeSurfaces["N"] = loadSurface("img/N.bmp");
+   if (gMazeSurfaces["N"] == nullptr)
    {
-      printf("Failed to load start image!\n");
+      printf("Failed to load \"N.bmp\"!\n");
       success = false;
    }
    
-   gMazeSurfaces[FINISH] = loadSurface("img/finish.bmp");
-   if (gMazeSurfaces[FINISH] == nullptr)
+   gMazeSurfaces["E"] = loadSurface("img/E.bmp");
+   if (gMazeSurfaces["E"] == nullptr)
    {
-      printf("Failed to load finish image!\n");
+      printf("Failed to load \"E.bmp\"!\n");
       success = false;
    }
    
-   gMazeSurfaces[BOINK] = loadSurface("img/boink.bmp");
-   if (gMazeSurfaces[BOINK] == nullptr)
+   gMazeSurfaces["S"] = loadSurface("img/S.bmp");
+   if (gMazeSurfaces["S"] == nullptr)
    {
-      printf("Failed to load boink image!\n");
+      printf("Failed to load \"S.bmp\"!\n");
       success = false;
    }
    
-   // Load remainder of surfaces
-
+   gMazeSurfaces["W"] = loadSurface("img/W.bmp");
+   if (gMazeSurfaces["W"] == nullptr)
+   {
+      printf("Failed to load \"W.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NE"] = loadSurface("img/NE.bmp");
+   if (gMazeSurfaces["NE"] == nullptr)
+   {
+      printf("Failed to load \"NE.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["ES"] = loadSurface("img/ES.bmp");
+   if (gMazeSurfaces["ES"] == nullptr)
+   {
+      printf("Failed to load \"ES.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["SW"] = loadSurface("img/SW.bmp");
+   if (gMazeSurfaces["SW"] == nullptr)
+   {
+      printf("Failed to load \"SW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NW"] = loadSurface("img/NW.bmp");
+   if (gMazeSurfaces["NW"] == nullptr)
+   {
+      printf("Failed to load \"NW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NS"] = loadSurface("img/NS.bmp");
+   if (gMazeSurfaces["NS"] == nullptr)
+   {
+      printf("Failed to load \"NS.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["EW"] = loadSurface("img/EW.bmp");
+   if (gMazeSurfaces["EW"] == nullptr)
+   {
+      printf("Failed to load \"EW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NES"] = loadSurface("img/NES.bmp");
+   if (gMazeSurfaces["NES"] == nullptr)
+   {
+      printf("Failed to load \"NES.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["ESW"] = loadSurface("img/ESW.bmp");
+   if (gMazeSurfaces["ESW"] == nullptr)
+   {
+      printf("Failed to load \"ESW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NSW"] = loadSurface("img/NSW.bmp");
+   if (gMazeSurfaces["NSW"] == nullptr)
+   {
+      printf("Failed to load \"NSW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NEW"] = loadSurface("img/NEW.bmp");
+   if (gMazeSurfaces["NEW"] == nullptr)
+   {
+      printf("Failed to load \"NEW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["NESW"] = loadSurface("img/NESW.bmp");
+   if (gMazeSurfaces["NESW"] == nullptr)
+   {
+      printf("Failed to load \"NESW.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["finish"] = loadSurface("img/finish.bmp");
+   if (gMazeSurfaces["finish"] == nullptr)
+   {
+      printf("Failed to load \"finish.bmp\"!\n");
+      success = false;
+   }
+   
+   gMazeSurfaces["boink"] = loadSurface("img/boink.bmp");
+   if (gMazeSurfaces["boink"] == nullptr)
+   {
+      printf("Failed to load \"boink.bmp\"!\n");
+      success = false;
+   }
+   
    return success;
 }
 
 
 void close()
-{   
-   for (int i = 0; i < MAZE_SURFACES_TOTAL; ++i)
-   {
-      if (gMazeSurfaces[i])
-      {
-         SDL_FreeSurface(gMazeSurfaces[i]);
-         gMazeSurfaces[i] = nullptr;
-      }
-   }
-            
+{               
    SDL_DestroyWindow(gWindow);
 
    gScreenSurface  = nullptr;
@@ -164,51 +263,4 @@ SDL_Surface* loadSurface(std::string path)
    }
    
    return loadedSurface;
-}
-
-std::vector<std::vector<int>> loadMaze(std::string filename) {
-   std::ifstream mazeFile(filename.c_str());
-   
-   if (!mazeFile.is_open()) {
-      printf("ERROR opening file\nEXITING...\n");
-      exit(1);
-   }
-
-   std::string s;
-   mazeFile >> s;
-   
-   int base;
-   mazeFile >> base;
-   mazeFile >> s;
-   
-   int height;
-   mazeFile >> height;
-   mazeFile >> s;
-   
-   int start;
-   mazeFile >> start;
-   mazeFile >> s;
-   
-   int end;
-   mazeFile >> end;
-   
-   std::vector<std::vector<int>> maze(height, std::vector<int>(base, 0));
-   
-   for (int row = 0; row < height; ++row) {
-      for (int col = 0; col < base; ++col) {
-         int wall;
-         mazeFile >> wall;
-         maze[row][col] = wall;
-      }
-   }
-   
-   
-   for (int row = 0; row < height; ++row) {
-      for (int col = 0; col < base; ++col) {
-         printf("%2d ", maze[row][col]);
-      }
-      printf("\n");
-   }
-   
-   return {};
 }
