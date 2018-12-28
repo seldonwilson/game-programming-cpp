@@ -35,6 +35,9 @@ int main(int argc, char* argv[])
       gCurrentSurface = gMazeSurfaces[maze.getTilename(start.first, start.second)];
       Player player(start.first, start.second);
 
+      int row = player.getRow();
+      int col = player.getCol();
+
       while (!quit)
       {
          SDL_Event e;
@@ -46,36 +49,45 @@ int main(int argc, char* argv[])
             
             else if (e.type == SDL_KEYDOWN)
             {
-               int row = player.getRow();
-               int col = player.getCol();
-               
                switch (e.key.keysym.sym)
                {
                   case SDLK_UP:
-                     if (!maze.canMoveNorth(row, col)) { break; }
-                     
+                     if (maze.canMoveNorth(row, col)) { player.moveUp(); }
                      break;
                   
                   case SDLK_DOWN:
-                  
+                     if (maze.canMoveSouth(row, col)) { player.moveDown(); }
                      break;
                      
                   case SDLK_LEFT:
-                  
+                     if (maze.canMoveWest(row, col)) { player.moveLeft(); }
                      break;
                      
                   case SDLK_RIGHT:
-                  
+                     if (maze.canMoveEast(row, col)) { player.moveRight(); }
                      break;
                }
             }
          }
 
-         SDL_BlitSurface(gCurrentSurface, nullptr, gScreenSurface, nullptr);
-         SDL_UpdateWindowSurface(gWindow);
+         row = player.getRow();
+         col = player.getCol();
+
+         if (row < 0 || row >= maze.getNumRows() || 
+             col < 0 || col >= maze.getNumCols()) {
+            quit = true;
+         } else {
+            gCurrentSurface = gMazeSurfaces[maze.getTilename(row, col)];
+            SDL_BlitSurface(gCurrentSurface, nullptr, gScreenSurface, nullptr);
+            SDL_UpdateWindowSurface(gWindow);
+         }
       }
+
+      gCurrentSurface = gMazeSurfaces["finish"];
+      SDL_BlitSurface(gCurrentSurface, nullptr, gScreenSurface, nullptr);
+      SDL_UpdateWindowSurface(gWindow);
+      SDL_Delay(2000);
    }
-   
    close();
    return 0;
 }
